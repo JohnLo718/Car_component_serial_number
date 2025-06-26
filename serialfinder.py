@@ -3,12 +3,6 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from github import Github
-from github.GithubException import GithubException
-
-REPO_NAME = "JohnLo718/Car_component_serial_number"
-DATA_FILE_REPO_PATH = "data/serial_numbers.json"
-COMMIT_MESSAGE = "Auto update from Streamlit app"
 
 
 class SerialNumberFinder:
@@ -75,32 +69,4 @@ class SerialNumberFinder:
         """
         with self.data_file.open("w", encoding="utf-8") as f:
             json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
-        return push_to_github(self.data_file)
 
-
-def push_to_github(file_path: Path) -> Optional[str]:
-    """Commit and push the given file to GitHub.
-
-    Returns an error message on failure or ``None`` on success.
-    """
-    token = os.getenv("GITHUB_TOKEN")
-    if not token:
-        return "GITHUB_TOKEN not set"
-
-    try:
-        g = Github(token)
-        repo = g.get_repo(REPO_NAME)
-        with file_path.open("r", encoding="utf-8") as f:
-            content = f.read()
-
-        try:
-            contents = repo.get_contents(DATA_FILE_REPO_PATH, ref="main")
-            repo.update_file(contents.path, COMMIT_MESSAGE, content, contents.sha, branch="main")
-        except GithubException as e:
-            if e.status == 404:
-                repo.create_file(DATA_FILE_REPO_PATH, COMMIT_MESSAGE, content, branch="main")
-            else:
-                return str(e)
-    except Exception as e:  # Catch network errors or auth failures
-        return str(e)
-    return None
