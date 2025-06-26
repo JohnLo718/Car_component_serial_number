@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 
+
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
 
