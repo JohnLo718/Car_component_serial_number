@@ -10,6 +10,7 @@ st.title('車輛零件比對')
 car1 = st.text_input('請輸入第一輛的序號')
 car2 = st.text_input('請輸入第二輛的序號')
 
+
 if car1 and car2:
     comps1 = finder.get_components(car1)
     comps2 = finder.get_components(car2)
