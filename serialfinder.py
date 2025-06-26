@@ -6,16 +6,17 @@ class SerialNumberFinder:
 
     def __init__(self, data_file: str):
         self.data_file = data_file
+
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        self.cars: Dict[str, List[str]] = {
-            key.upper(): [c.lower() for c in comps]
-            for key, comps in data.get('cars', {}).items()
-        }
-        self.components: Dict[str, str] = {
-            name.lower(): serial
-            for name, serial in data.get('components', {}).items()
-        }
+            self.cars: Dict[str, List[str]] = {
+                k.upper(): [c.lower() for c in comps]
+                for k, comps in data.get('cars', {}).items()
+            }
+            self.components: Dict[str, str] = {
+                name.lower(): serial
+                for name, serial in data.get('components', {}).items()
+            }
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:
         """Return list of component names for a car serial."""
@@ -33,12 +34,12 @@ class SerialNumberFinder:
         """Add a component to an existing car."""
         car = car_serial.upper()
         comp = component.lower()
-        self.cars.setdefault(car, [])
-        if comp not in self.cars[car]:
-            self.cars[car].append(comp)
+        if car not in self.cars:
+            self.cars[car] = []
+        self.cars[car].append(comp)
 
     def edit_component(self, component: str, serial: str) -> None:
-        """Create or update a component serial number."""
+        """Overwrite/update a component serial number."""
         self.components[component.lower()] = serial
 
     def save(self) -> None:
