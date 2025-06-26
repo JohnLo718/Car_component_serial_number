@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -60,7 +61,11 @@ class SerialNumberFinder:
             return True
         return False
 
-    def save(self) -> None:
-        """Persist data back to the JSON file."""
+    def save(self) -> Optional[str]:
+        """Persist data back to the JSON file and push to GitHub.
+
+        Returns an error message if the GitHub update fails.
+        """
         with self.data_file.open("w", encoding="utf-8") as f:
             json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
+

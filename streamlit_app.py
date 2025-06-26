@@ -93,15 +93,17 @@ elif mode == MODE_EDIT:
             new_serial = st.text_input("Serial number", value=current)
             if st.button("Update component serial"):
                 finder.edit_component(comp, new_serial)
-                finder.save()
-                st.success("Component updated")
+                err = finder.save()
+                if err:
+                    st.warning(f"GitHub sync failed: {err}")
+                else:
+                    st.success("Component updated")
             new_comp = st.text_input("New component name")
             new_comp_serial = st.text_input("New component serial")
             if st.button("Add component to car") and new_comp and new_comp_serial:
                 finder.add_component_to_car(car, new_comp)
                 finder.edit_component(new_comp, new_comp_serial)
-                finder.save()
-                st.success("Component added")
+
 
 elif mode == MODE_ADD:
     car = st.text_input("New car serial")
@@ -115,8 +117,7 @@ elif mode == MODE_ADD:
                 finder.edit_component(name, serial)
         if comp_list:
             finder.add_car(car, comp_list)
-            finder.save()
-            st.success(f"Car {car} added")
+
         else:
             st.error("No valid components provided")
 
@@ -130,8 +131,11 @@ elif mode == MODE_DELETE:
             if submitted:
                 if confirm:
                     if finder.delete_car(car):
-                        finder.save()
-                        st.success(f"Car {car} deleted")
+                        err = finder.save()
+                        if err:
+                            st.warning(f"GitHub sync failed: {err}")
+                        else:
+                            st.success(f"Car {car} deleted")
                     else:
                         st.error("Car not found")
                 else:
@@ -145,8 +149,11 @@ elif mode == MODE_DELETE:
             if submitted:
                 if confirm:
                     if finder.delete_component_from_car(car, component):
-                        finder.save()
-                        st.success("Component deleted")
+                        err = finder.save()
+                        if err:
+                            st.warning(f"GitHub sync failed: {err}")
+                        else:
+                            st.success("Component deleted")
                     else:
                         st.error("Car or component not found")
                 else:
