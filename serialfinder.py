@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Union
-
+from typing import Optional, Dict, List
 
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
@@ -17,6 +17,30 @@ class SerialNumberFinder:
         self.components: Dict[str, str] = {
             name.lower(): serial for name, serial in data.get("components", {}).items()
         }
+
+    def __init__(self, data_file: str):
+        self.data_file = data_file
+        with open(data_file, "r", encoding="utf-8") as f:
+            for key, comps in data.get("cars", {}).items()
+            name.lower(): serial for name, serial in data.get("components", {}).items()
+        with open(self.data_file, "w", encoding="utf-8") as f:
+            json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
+        }
+        self.components: Dict[str, str] = {
+            name.lower(): serial
+            for name, serial in data.get('components', {}).items()
+        }
+
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self.cars: Dict[str, List[str]] = {
+                k.upper(): [c.lower() for c in comps]
+                for k, comps in data.get('cars', {}).items()
+            }
+            self.components: Dict[str, str] = {
+                name.lower(): serial
+                for name, serial in data.get('components', {}).items()
+            }
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:
         """Return list of component names for a car serial."""
@@ -64,3 +88,15 @@ class SerialNumberFinder:
         """Persist data back to the JSON file."""
         with self.data_file.open("w", encoding="utf-8") as f:
             json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
+        if car not in self.cars:
+            self.cars[car] = []
+        self.cars[car].append(comp)
+
+    def edit_component(self, component: str, serial: str) -> None:
+        """Overwrite/update a component serial number."""
+        self.components[component.lower()] = serial
+
+    def save(self) -> None:
+        """Persist data back to the JSON file."""
+        with open(self.data_file, 'w', encoding='utf-8') as f:
+            json.dump({'cars': self.cars, 'components': self.components}, f, indent=2)
