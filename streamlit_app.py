@@ -1,3 +1,4 @@
+
 import streamlit as stfrom pathlib import Path
 from serialfinder import SerialNumberFinder
 DATA_FILE = Path(__file__).parent / "data" / "serial_numbers.json"
