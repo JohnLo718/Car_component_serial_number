@@ -5,10 +5,11 @@ DATA_FILE = 'data/serial_numbers.json'
 
 finder = SerialNumberFinder(DATA_FILE)
 
-st.title('Car Component Comparator')
+st.title('車輛零件比對')
 
-car1 = st.text_input('Enter first car serial number')
-car2 = st.text_input('Enter second car serial number')
+car1 = st.text_input('請輸入第一輛的序號')
+car2 = st.text_input('請輸入第二輛的序號')
+
 
 if car1 and car2:
     comps1 = finder.get_components(car1)
