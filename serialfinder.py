@@ -1,11 +1,15 @@
 import json
+import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
-<<<<<<< m7vm79-codex/create-car-component-serial-number-finder-with-streamlit
 
-=======
-from typing import Optional, Dict, List
->>>>>>> main
+from github import Github
+from github.GithubException import GithubException
+
+REPO_NAME = "JohnLo718/Car_component_serial_number"
+DATA_FILE_REPO_PATH = "data/serial_numbers.json"
+COMMIT_MESSAGE = "Auto update from Streamlit app"
+
 
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
@@ -22,33 +26,6 @@ class SerialNumberFinder:
             name.lower(): serial for name, serial in data.get("components", {}).items()
         }
 
-<<<<<<< m7vm79-codex/create-car-component-serial-number-finder-with-streamlit
-=======
-    def __init__(self, data_file: str):
-        self.data_file = data_file
-        with open(data_file, "r", encoding="utf-8") as f:
-            for key, comps in data.get("cars", {}).items()
-            name.lower(): serial for name, serial in data.get("components", {}).items()
-        with open(self.data_file, "w", encoding="utf-8") as f:
-            json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
-        }
-        self.components: Dict[str, str] = {
-            name.lower(): serial
-            for name, serial in data.get('components', {}).items()
-        }
-
-        with open(data_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            self.cars: Dict[str, List[str]] = {
-                k.upper(): [c.lower() for c in comps]
-                for k, comps in data.get('cars', {}).items()
-            }
-            self.components: Dict[str, str] = {
-                name.lower(): serial
-                for name, serial in data.get('components', {}).items()
-            }
-
->>>>>>> main
     def get_components(self, car_serial: str) -> Optional[List[str]]:
         """Return list of component names for a car serial."""
         return self.cars.get(car_serial.upper())
@@ -91,22 +68,34 @@ class SerialNumberFinder:
             return True
         return False
 
-    def save(self) -> None:
-        """Persist data back to the JSON file."""
+    def save(self) -> Optional[str]:
+        """Persist data back to the JSON file and push to GitHub.
+
+        Returns an error message if the GitHub update fails.
+        """
         with self.data_file.open("w", encoding="utf-8") as f:
             json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
-<<<<<<< m7vm79-codex/create-car-component-serial-number-finder-with-streamlit
-=======
-        if car not in self.cars:
-            self.cars[car] = []
-        self.cars[car].append(comp)
+        return push_to_github(self.data_file)
 
-    def edit_component(self, component: str, serial: str) -> None:
-        """Overwrite/update a component serial number."""
-        self.components[component.lower()] = serial
 
-    def save(self) -> None:
-        """Persist data back to the JSON file."""
-        with open(self.data_file, 'w', encoding='utf-8') as f:
-            json.dump({'cars': self.cars, 'components': self.components}, f, indent=2)
->>>>>>> main
+def push_to_github(file_path: Path) -> Optional[str]:
+    """Commit and push the given file to GitHub.
+
+    Returns an error message on failure or None on success.
+    """
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        return "GITHUB_TOKEN not set"
+
+    try:
+        g = Github(token)
+        repo = g.get_repo(REPO_NAME)
+        with file_path.open("r", encoding="utf-8") as f:
+            content = f.read()
+        contents = repo.get_contents(DATA_FILE_REPO_PATH, ref="main")
+        repo.update_file(contents.path, COMMIT_MESSAGE, content, contents.sha, branch="main")
+    except GithubException as e:
+        return str(e)
+    except Exception as e:
+        return str(e)
+    return None
