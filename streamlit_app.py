@@ -11,9 +11,14 @@ MODE_COMPARE = 'Compare serial numbers'
 MODE_LIST = 'List components for a car'
 MODE_EDIT = 'Edit car components'
 MODE_ADD = 'Add new car'
+<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
 MODE_DELETE = 'Delete car or component'
 
 mode = st.selectbox('Choose action', [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD, MODE_DELETE])
+=======
+
+mode = st.selectbox('Choose action', [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD])
+>>>>>>> main
 
 if mode == MODE_COMPARE:
     car1 = st.text_input('Enter first car serial number')
@@ -51,6 +56,7 @@ if mode == MODE_COMPARE:
 
 elif mode == MODE_LIST:
     car = st.text_input('Enter car serial number')
+<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
     if car:
         comps = finder.get_components(car)
         if comps is None:
@@ -82,6 +88,37 @@ elif mode == MODE_EDIT:
                 finder.edit_component(new_comp, new_comp_serial)
                 finder.save()
                 st.success('Component added')
+=======
+    comps = finder.get_components(car)
+    if comps is None:
+        st.error(f'Car serial {car} not found')
+    else:
+        st.subheader(f'Components for {car.upper()}')
+        for comp in comps:
+            serial = finder.component_serial(comp)
+            st.write(f'{comp} - {serial}')
+
+elif mode == MODE_EDIT:
+    car = st.text_input('Enter car serial number to edit')
+    comps = finder.get_components(car)
+    if comps is None:
+        st.error(f'Car serial {car} not found')
+    else:
+        comp = st.selectbox('Select component', comps)
+        current = finder.component_serial(comp) or ''
+        new_serial = st.text_input('Serial number', value=current)
+        if st.button('Update component serial!'):
+            finder.edit_component(comp, new_serial)
+            finder.save()
+            st.success('Component updated')
+        new_comp = st.text_input('New component name')
+        new_comp_serial = st.text_input('New component serial')
+        if st.button('Add component to car') and new_comp and new_comp_serial:
+            finder.add_component_to_car(car, new_comp)
+            finder.edit_component(new_comp, new_comp_serial)
+            finder.save()
+            st.success('Component added')
+>>>>>>> main
 
 elif mode == MODE_ADD:
     car = st.text_input('New car serial')
@@ -99,6 +136,7 @@ elif mode == MODE_ADD:
             st.success(f'Car {car} added')
         else:
             st.error('No valid components provided')
+<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
 
 elif mode == MODE_DELETE:
     choice = st.radio('Delete target', ['Car', 'Component from car'])
@@ -132,3 +170,5 @@ elif mode == MODE_DELETE:
                 else:
                     st.warning('Deletion not confirmed')
 
+=======
+>>>>>>> main

@@ -6,6 +6,7 @@ class SerialNumberFinder:
 
     def __init__(self, data_file: str):
         self.data_file = data_file
+<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
         self.cars: Dict[str, List[str]] = {
@@ -16,6 +17,19 @@ class SerialNumberFinder:
             name.lower(): serial
             for name, serial in data.get('components', {}).items()
         }
+=======
+
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self.cars: Dict[str, List[str]] = {
+                k.upper(): [c.lower() for c in comps]
+                for k, comps in data.get('cars', {}).items()
+            }
+            self.components: Dict[str, str] = {
+                name.lower(): serial
+                for name, serial in data.get('components', {}).items()
+            }
+>>>>>>> main
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:
         """Return list of component names for a car serial."""
@@ -33,6 +47,7 @@ class SerialNumberFinder:
         """Add a component to an existing car."""
         car = car_serial.upper()
         comp = component.lower()
+<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
         self.cars.setdefault(car, [])
         if comp not in self.cars[car]:
             self.cars[car].append(comp)
@@ -59,6 +74,16 @@ class SerialNumberFinder:
             return True
         return False
 
+=======
+        if car not in self.cars:
+            self.cars[car] = []
+        self.cars[car].append(comp)
+
+    def edit_component(self, component: str, serial: str) -> None:
+        """Overwrite/update a component serial number."""
+        self.components[component.lower()] = serial
+
+>>>>>>> main
     def save(self) -> None:
         """Persist data back to the JSON file."""
         with open(self.data_file, 'w', encoding='utf-8') as f:
