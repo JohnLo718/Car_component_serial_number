@@ -11,8 +11,9 @@ MODE_COMPARE = 'Compare serial numbers'
 MODE_LIST = 'List components for a car'
 MODE_EDIT = 'Edit car components'
 MODE_ADD = 'Add new car'
+MODE_DELETE = 'Delete car or component'
 
-mode = st.selectbox('Choose action', [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD])
+mode = st.selectbox('Choose action', [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD, MODE_DELETE])
 
 if mode == MODE_COMPARE:
     car1 = st.text_input('Enter first car serial number')
@@ -74,6 +75,38 @@ elif mode == MODE_EDIT:
             st.success('Component updated')
         new_comp = st.text_input('New component name')
         new_comp_serial = st.text_input('New component serial')
+elif mode == MODE_DELETE:
+    choice = st.radio('Delete target', ['Car', 'Component from car'])
+    if choice == 'Car':
+        with st.form('delete_car'):
+            car = st.text_input('Car serial to delete')
+            confirm = st.checkbox('I confirm deletion')
+            submitted = st.form_submit_button('Delete car')
+            if submitted:
+                if confirm:
+                    if finder.delete_car(car):
+                        finder.save()
+                        st.success(f'Car {car} deleted')
+                    else:
+                        st.error('Car not found')
+                else:
+                    st.warning('Deletion not confirmed')
+    else:
+        with st.form('delete_component'):
+            car = st.text_input('Car serial')
+            component = st.text_input('Component name to delete')
+            confirm = st.checkbox('I confirm deletion')
+            submitted = st.form_submit_button('Delete component')
+            if submitted:
+                if confirm:
+                    if finder.delete_component_from_car(car, component):
+                        finder.save()
+                        st.success('Component deleted')
+                    else:
+                        st.error('Car or component not found')
+                else:
+                    st.warning('Deletion not confirmed')
+
         if st.button('Add component to car') and new_comp and new_comp_serial:
             finder.add_component_to_car(car, new_comp)
             finder.edit_component(new_comp, new_comp_serial)

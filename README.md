@@ -1,6 +1,7 @@
 # Car Component Serial Number Finder
 
 This repository contains a small Streamlit application for managing cars and their component serial numbers.
+You can compare cars, list their components, add or edit entries, and now delete cars or individual components with confirmation.
 
 ## Running locally
 

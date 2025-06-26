@@ -16,6 +16,24 @@ class SerialNumberFinder:
             self.components: Dict[str, str] = {
                 name.lower(): serial
                 for name, serial in data.get('components', {}).items()
+    def delete_component_from_car(self, car_serial: str, component: str) -> bool:
+        """Delete a component from a car. Returns True if removed."""
+        car = car_serial.upper()
+        comp = component.lower()
+        comps = self.cars.get(car)
+        if comps and comp in comps:
+            comps.remove(comp)
+            return True
+        return False
+
+    def delete_car(self, car_serial: str) -> bool:
+        """Delete a car entirely. Returns True if removed."""
+        car = car_serial.upper()
+        if car in self.cars:
+            del self.cars[car]
+            return True
+        return False
+
             }
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:
