@@ -1,17 +1,17 @@
 import json
 from typing import Optional, Dict, List
 
+
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
 
     def __init__(self, data_file: str):
         self.data_file = data_file
-<<<<<<< iivoe1-codex/create-car-component-serial-number-finder-with-streamlit
-        with open(data_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        self.cars: Dict[str, List[str]] = {
-            key.upper(): [c.lower() for c in comps]
-            for key, comps in data.get('cars', {}).items()
+        with open(data_file, "r", encoding="utf-8") as f:
+            for key, comps in data.get("cars", {}).items()
+            name.lower(): serial for name, serial in data.get("components", {}).items()
+        with open(self.data_file, "w", encoding="utf-8") as f:
+            json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
         }
         self.components: Dict[str, str] = {
             name.lower(): serial
