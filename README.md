@@ -23,3 +23,4 @@ The app is designed to work well on Google Cloud Run where the container listens
 
 ## GitHub auto-sync
 
+Any changes made to `data/serial_numbers.json` through the Streamlit UI are automatically pushed back to the GitHub repository. Set the `GITHUB_TOKEN` environment variable with a Personal Access Token that has permission to update the repository (typically the `repo` scope).
