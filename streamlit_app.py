@@ -13,9 +13,20 @@ MODE_EDIT = "Edit car components"
 MODE_ADD = "Add new car"
 MODE_DELETE = "Delete car or component"
 
+# Collect the choices in a single list so the selectbox and conditionals share
+# the exact same string instances. This avoids accidental NameError issues if
+# the constants are refactored or reordered.
+MODE_CHOICES = [
+    MODE_COMPARE,
+    MODE_LIST,
+    MODE_EDIT,
+    MODE_ADD,
+    MODE_DELETE,
+]
+
 mode = st.selectbox(
     "Choose action",
-    [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD, MODE_DELETE],
+    MODE_CHOICES,
 )
 
 if mode == MODE_COMPARE:
