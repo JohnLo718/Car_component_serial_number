@@ -7,11 +7,7 @@ finder = SerialNumberFinder(DATA_FILE)
 
 st.title("Car Component Manager")
 
-MODE_COMPARE = "Compare serial numbers"
-MODE_LIST = "List components for a car"
-MODE_EDIT = "Edit car components"
-MODE_ADD = "Add new car"
-MODE_DELETE = "Delete car or component"
+
 
 mode = st.selectbox(
     "Choose action",
@@ -19,8 +15,7 @@ mode = st.selectbox(
 )
 
 if mode == MODE_COMPARE:
-    car1 = st.text_input("Enter first car serial number").strip()
-    car2 = st.text_input("Enter second car serial number").strip()
+
     if car1 and car2:
         comps1 = finder.get_components(car1)
         comps2 = finder.get_components(car2)
@@ -70,7 +65,7 @@ if mode == MODE_COMPARE:
                 )
 
 elif mode == MODE_LIST:
-    car = st.text_input("Enter car serial number").strip()
+
     if car:
         comps = finder.get_components(car)
         if comps is None:
@@ -82,7 +77,7 @@ elif mode == MODE_LIST:
                 st.write(f"{comp} - {serial}")
 
 elif mode == MODE_EDIT:
-    car = st.text_input("Enter car serial number to edit").strip()
+
     if car:
         comps = finder.get_components(car)
         if comps is None:
@@ -98,19 +93,7 @@ elif mode == MODE_EDIT:
                     st.warning(f"GitHub sync failed: {err}")
                 else:
                     st.success("Component updated")
-            new_comp = st.text_input("New component name").strip()
-            new_comp_serial = st.text_input("New component serial").strip()
-            if st.button("Add component to car") and new_comp and new_comp_serial:
-                finder.add_component_to_car(car, new_comp)
-                finder.edit_component(new_comp, new_comp_serial)
-                err = finder.save()
-                if err:
-                    st.warning(f"GitHub sync failed: {err}")
-                else:
-                    st.success("Component added")
 
-elif mode == MODE_ADD:
-    car = st.text_input("New car serial").strip()
     comps_text = st.text_area('Components and serials (one per line "component,serial")')
     if st.button("Add car") and car and comps_text:
         comp_list = []
@@ -121,11 +104,7 @@ elif mode == MODE_ADD:
                 finder.edit_component(name, serial)
         if comp_list:
             finder.add_car(car, comp_list)
-            err = finder.save()
-            if err:
-                st.warning(f"GitHub sync failed: {err}")
-            else:
-                st.success(f"Car {car} added")
+
         else:
             st.error("No valid components provided")
 
