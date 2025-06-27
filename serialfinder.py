@@ -3,6 +3,18 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
+try:
+    from github import Github
+    from github.GithubException import GithubException
+except ModuleNotFoundError:  # Allows running without PyGithub installed
+    Github = None  # type: ignore
+    GithubException = Exception  # type: ignore
+
+REPO_NAME = "JohnLo718/Car_component_serial_number"
+DATA_FILE_REPO_PATH = "data/serial_numbers.json"
+COMMIT_MESSAGE = "Auto update from Streamlit app"
+
+
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
 
@@ -21,6 +33,12 @@ class SerialNumberFinder:
         with self.data_file.open("r", encoding="utf-8") as f:
             data = json.load(f)
         self.cars: Dict[str, List[str]] = {
+            self._normalize_car(key): [self._normalize_component(c) for c in comps]
+            for key, comps in data.get("cars", {}).items()
+        }
+        self.components: Dict[str, str] = {
+            self._normalize_component(name): serial
+            for name, serial in data.get("components", {}).items()
         }
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:
@@ -72,4 +90,35 @@ class SerialNumberFinder:
         """
         with self.data_file.open("w", encoding="utf-8") as f:
             json.dump({"cars": self.cars, "components": self.components}, f, indent=2)
+        return push_to_github(self.data_file)
 
+
+def push_to_github(file_path: Path) -> Optional[str]:
+    """Commit and push the given file to GitHub.
+
+    Returns an error message on failure or ``None`` on success.
+    """
+    if Github is None:
+        return "PyGithub not installed"
+
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        return "GITHUB_TOKEN not set"
+
+    try:
+        g = Github(token)
+        repo = g.get_repo(REPO_NAME)
+        with file_path.open("r", encoding="utf-8") as f:
+            content = f.read()
+
+        try:
+            contents = repo.get_contents(DATA_FILE_REPO_PATH, ref="main")
+            repo.update_file(contents.path, COMMIT_MESSAGE, content, contents.sha, branch="main")
+        except GithubException as e:
+            if e.status == 404:
+                repo.create_file(DATA_FILE_REPO_PATH, COMMIT_MESSAGE, content, branch="main")
+            else:
+                return str(e)
+    except Exception as e:  # Catch network errors or auth failures
+        return str(e)
+    return None
