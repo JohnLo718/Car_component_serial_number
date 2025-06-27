@@ -1,10 +1,33 @@
 {
   "cars": {
-    "CAR100": ["engine", "transmission", "brake pad"],
-    "CAR200": ["engine", "fuel pump", "alternator"],
-    "CAR300": ["transmission", "brake pad", "fuel pump"],
-    "CAR400": ["engine", "radiator", "alternator"],
-    "CAR500": ["engine", "spark plug", "transmission"]
+    "CAR100": [
+      "engine",
+      "transmission",
+      "brake pad"
+    ],
+    "CAR200": [
+      "engine",
+      "fuel pump",
+      "alternator"
+    ],
+    "CAR300": [
+      "transmission",
+      "brake pad",
+      "fuel pump"
+    ],
+    "CAR400": [
+      "engine",
+      "radiator",
+      "alternator"
+    ],
+    "CAR500": [
+      "engine",
+      "spark plug",
+      "transmission"
+    ],
+    "CAR1000": [
+      "\"kfldfg"
+    ]
   },
   "components": {
     "engine": "ENG-001",
@@ -13,6 +36,7 @@
     "fuel pump": "FUE-004",
     "alternator": "ALT-005",
     "radiator": "RAD-006",
-    "spark plug": "SPK-007"
+    "spark plug": "SPK-007",
+    "\"kfldfg": "dsjfk\""
   }
 }
