@@ -7,11 +7,7 @@ finder = SerialNumberFinder(DATA_FILE)
 
 st.title("Car Component Manager")
 
-MODE_COMPARE = "車輛零件比較"
-MODE_LIST = "單台車輛零件"
-MODE_EDIT = "編輯車輛零件"
-MODE_ADD = "新增車輛"
-MODE_DELETE = "刪除車輛或零件"
+
 
 mode = st.selectbox(
     "Choose action",
@@ -19,8 +15,7 @@ mode = st.selectbox(
 )
 
 if mode == MODE_COMPARE:
-    car1 = st.text_input("輸入車輛1序號")
-    car2 = st.text_input("輸入車輛2序號")
+
     if car1 and car2:
         comps1 = finder.get_components(car1)
         comps2 = finder.get_components(car2)
@@ -70,7 +65,7 @@ if mode == MODE_COMPARE:
                 )
 
 elif mode == MODE_LIST:
-    car = st.text_input("輸入車輛序號")
+
     if car:
         comps = finder.get_components(car)
         if comps is None:
@@ -82,7 +77,7 @@ elif mode == MODE_LIST:
                 st.write(f"{comp} - {serial}")
 
 elif mode == MODE_EDIT:
-    car = st.text_input("輸入要編輯的車輛")
+
     if car:
         comps = finder.get_components(car)
         if comps is None:
@@ -90,7 +85,7 @@ elif mode == MODE_EDIT:
         else:
             comp = st.selectbox("Select component", comps)
             current = finder.component_serial(comp) or ""
-            new_serial = st.text_input("Serial number", value=current)
+            new_serial = st.text_input("Serial number", value=current).strip()
             if st.button("Update component serial"):
                 finder.edit_component(comp, new_serial)
                 err = finder.save()
@@ -98,15 +93,7 @@ elif mode == MODE_EDIT:
                     st.warning(f"GitHub sync failed: {err}")
                 else:
                     st.success("Component updated")
-            new_comp = st.text_input("New component name")
-            new_comp_serial = st.text_input("New component serial")
-            if st.button("Add component to car") and new_comp and new_comp_serial:
-                finder.add_component_to_car(car, new_comp)
-                finder.edit_component(new_comp, new_comp_serial)
 
-
-elif mode == MODE_ADD:
-    car = st.text_input("New car serial")
     comps_text = st.text_area('Components and serials (one per line "component,serial")')
     if st.button("Add car") and car and comps_text:
         comp_list = []
@@ -125,7 +112,7 @@ elif mode == MODE_DELETE:
     choice = st.radio("Delete target", ["Car", "Component from car"])
     if choice == "Car":
         with st.form("delete_car"):
-            car = st.text_input("Car serial to delete")
+            car = st.text_input("Car serial to delete").strip()
             confirm = st.checkbox("I confirm deletion")
             submitted = st.form_submit_button("Delete car")
             if submitted:
@@ -142,8 +129,8 @@ elif mode == MODE_DELETE:
                     st.warning("Deletion not confirmed")
     else:
         with st.form("delete_component"):
-            car = st.text_input("Car serial")
-            component = st.text_input("Component name to delete")
+            car = st.text_input("Car serial").strip()
+            component = st.text_input("Component name to delete").strip()
             confirm = st.checkbox("I confirm deletion")
             submitted = st.form_submit_button("Delete component")
             if submitted:

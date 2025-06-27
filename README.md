@@ -23,4 +23,3 @@ The app is designed to work well on Google Cloud Run where the container listens
 
 ## GitHub auto-sync
 
-
