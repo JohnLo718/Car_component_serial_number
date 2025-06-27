@@ -3,8 +3,6 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-
-
 class SerialNumberFinder:
     """Helper to look up cars and component serial numbers."""
 
@@ -23,7 +21,6 @@ class SerialNumberFinder:
         with self.data_file.open("r", encoding="utf-8") as f:
             data = json.load(f)
         self.cars: Dict[str, List[str]] = {
-
         }
 
     def get_components(self, car_serial: str) -> Optional[List[str]]:

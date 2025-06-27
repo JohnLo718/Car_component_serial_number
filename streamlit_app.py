@@ -7,8 +7,6 @@ finder = SerialNumberFinder(DATA_FILE)
 
 st.title("Car Component Manager")
 
-
-
 mode = st.selectbox(
     "Choose action",
     [MODE_COMPARE, MODE_LIST, MODE_EDIT, MODE_ADD, MODE_DELETE],
